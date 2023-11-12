@@ -22,7 +22,7 @@
             type="warning"
             icon="el-icon-edit"
             size="mini"
-            @click="updateTradeMark"
+            @click="updateTradeMark(row)"
           >修改</el-button>
           <el-button
             type="danger"
@@ -48,7 +48,7 @@
     <!--
       :visible.sync:控制對話框顯示與隱藏用
      -->
-    <el-dialog title="添加品牌" :visible.sync="dialogFormVisible">
+    <el-dialog :title="tmForm.id ? '修改品牌' : '添加品牌'" :visible.sync="dialogFormVisible">
       <!-- 展示表單
         :model屬性:收集表單的數據
       -->
@@ -116,8 +116,9 @@ export default {
       this.dialogFormVisible = true
       this.tmForm = { tmName: '', logoUrl: '' }
     },
-    updateTradeMark() {
+    updateTradeMark(row) {
       this.dialogFormVisible = true
+      this.tmForm = { ...row }
     },
     handleAvatarSuccess(res) {
       this.tmForm.logoUrl = res.data
@@ -139,8 +140,13 @@ export default {
       this.dialogFormVisible = false
       const result = await this.$API.trademark.reqAddOrUpdateTradeMark(this.tmForm)
       if (result.code === 200) {
-        this.$message(this.tmForm.id ? '修改品牌成功' : '添加品牌成功')
-        this.getPageList()
+        this.$message({
+          type: 'success',
+          message: this.tmForm.id ? '修改品牌成功' : '添加品牌成功'
+        })
+        //* 新增或修改品牌成功以後，需要再次取得品牌清單進行展示
+        //* 如果新增品牌： 停留在第一頁，修改品牌應該留在目前頁面
+        this.getPageList(this.tmForm.id ? this.page : 1)
       }
     }
   }

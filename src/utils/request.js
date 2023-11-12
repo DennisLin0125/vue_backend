@@ -26,6 +26,7 @@ service.interceptors.request.use(
     return config
   },
   error => {
+    nProgress.start()
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -67,6 +68,7 @@ service.interceptors.response.use(
           })
         })
       }
+      nProgress.done()
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       nProgress.done()
@@ -80,6 +82,7 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
+    nProgress.done()
     return Promise.reject(error)
   }
 )
