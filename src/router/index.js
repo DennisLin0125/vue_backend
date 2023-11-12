@@ -71,7 +71,7 @@ export const constantRoutes = [
         path: 'attrbutes',
         name: 'Attrbutes',
         component: () => import('@/views/product/attrbutes'),
-        meta: { title: '品牌屬性管理' }
+        meta: { title: '平台屬性管理' }
       },
       {
         path: 'sku',
