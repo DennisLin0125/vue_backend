@@ -28,6 +28,7 @@
             type="danger"
             icon="el-icon-delete"
             size="mini"
+            @click="deleteTradeMark(row)"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -173,6 +174,35 @@ export default {
           console.log('error submit!!')
           return false
         }
+      })
+    },
+    // 刪除品牌
+    deleteTradeMark(row) {
+      this.$confirm(`確定刪除 ${row.tmName}?`, '提示', {
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        // 發送請求
+        const result = await this.$API.trademark.reqDeleteTradeMark(row.id)
+        if (result.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          // 更新
+          this.getPageList(this.list.length ? this.page : this.page)
+        } else {
+          this.$message({
+            type: 'info',
+            message: '删除失敗!'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }
