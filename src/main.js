@@ -39,6 +39,10 @@ Vue.config.productionTip = false
 import API from '@/api'
 Vue.prototype.$API = API
 
+// 引入組件
+import CategorySelect from '@/components/CategorySelect'
+Vue.component(CategorySelect.name,CategorySelect)
+
 new Vue({
   el: '#app',
   router,
