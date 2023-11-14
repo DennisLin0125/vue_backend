@@ -49,7 +49,16 @@ export default {
     },
     // 一級分類的事件發生變化的回調
     async handler1() {
+      // 清除資料
+      this.list2 = []
+      this.list3 = []
+      this.cForm.category2Id = ''
+      this.cForm.category3Id = ''
+
       const { category1Id } = this.cForm
+      // 觸發自定義事件
+      this.$emit('getCategoryId', { categoryId: category1Id, level: 1 })
+
       // 發請求
       const result = await this.$API.attr.reqCategory2List(category1Id)
       if (result.code === 200) {
@@ -58,15 +67,22 @@ export default {
     },
     // 二級分類的事件發生變化的回調
     async handler2() {
+      this.list3 = []
+      this.cForm.category3Id = ''
+
       const { category2Id } = this.cForm
+      // 觸發自定義事件
+      this.$emit('getCategoryId', { categoryId: category2Id, level: 2 })
       // 發請求
       const result = await this.$API.attr.reqCategory3List(category2Id)
       if (result.code === 200) {
         this.list3 = result.data
       }
     },
-    handler3(){
-      
+    handler3() {
+      const { category3Id } = this.cForm
+      // 觸發自定義事件
+      this.$emit('getCategoryId', { categoryId: category3Id, level: 3 })
     }
   }
 }
