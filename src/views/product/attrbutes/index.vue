@@ -30,14 +30,22 @@
             <el-input v-model="attrInfo.attrName" placeholder="請輸入屬性名" />
           </el-form-item>
         </el-form>
-        <el-button type="primary" icon="el-icon-plus">添加屬性值</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!attrInfo.attrName" @click="addAttrValue">添加屬性值</el-button>
         <el-button @click="isShowTable=true">取消</el-button>
-        <el-table border style="width: 100%;margin: 20px 10px;">
+        <el-table border style="width: 100%;margin: 20px 10px;" :data="attrInfo.attrValueList">
           <el-table-column type="index" label="序號" width="80" align="center" />
-          <el-table-column prop="attrName" label="屬性值名稱" width="width" />
-          <el-table-column prop="" label="操作" width="width" />
+          <el-table-column prop="attrName" label="屬性值名稱" width="width">
+            <template slot-scope="{row,$index}">
+              <el-input v-model="row.valueName" placeholder="請輸入屬性值名稱" size="mini" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="" label="操作" width="width">
+            <template slot-scope="{row,$index}">
+              <el-button type="danger" icon="el-icon-delete" size="mini" />
+            </template>
+          </el-table-column>
         </el-table>
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" :disabled="!attrInfo.attrName">保存</el-button>
         <el-button @click="isShowTable=true">取消</el-button>
       </div>
     </el-card>
@@ -58,12 +66,7 @@ export default {
       attrInfo:
         {
           'attrName': '',
-          'attrValueList': [
-            {
-              'attrId': 0,
-              'valueName': 'string'
-            }
-          ],
+          'attrValueList': [],
           'categoryId': 0,
           'categoryLevel': 3
         }
@@ -91,6 +94,14 @@ export default {
       if (result.code === 200) {
         this.attrList = result.data
       }
+    },
+    addAttrValue() {
+      this.attrInfo.attrValueList.push(
+        {
+          'attrId': undefined,
+          'valueName': ''
+        }
+      )
     }
   }
 }
