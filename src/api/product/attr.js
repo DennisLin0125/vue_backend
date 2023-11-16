@@ -36,3 +36,26 @@ export const reqAttrList = (category1Id, category2Id, category3Id) => {
     method: 'GET'
   })
 }
+
+//* 添加屬性與屬性值API
+//* admin/product/saveAttrInfo  post
+export const reqAddOrUpdateAttr = (data) => {
+  return request({
+    url: '/admin/product/saveAttrInfo',
+    method: 'post',
+    data
+  })
+}
+/*
+{
+  "attrName": "",      屬性名
+  "attrValueList": [   屬性名中屬性值，因为屬性值可以是多个，因此需要的是陣列
+    {
+      "attrId": 0,          屬性的id
+      "valueName": "string"  屬性值
+    }
+  ],
+  "categoryId": 0,    category3Id
+  "categoryLevel":3,
+}
+*/

@@ -25,9 +25,9 @@
       </div>
       <!-- 添加屬性和修改屬性的結構 -->
       <div v-show="!isShowTable">
-        <el-form ref="form" :rules="rules" label-width="80px" :inline="true">
+        <el-form ref="form" :rules="rules" label-width="80px" :inline="true" :model="attrInfo">
           <el-form-item label="屬性名">
-            <el-input placeholder="請輸入屬性名" />
+            <el-input v-model="attrInfo.attrName" placeholder="請輸入屬性名" />
           </el-form-item>
         </el-form>
         <el-button type="primary" icon="el-icon-plus">添加屬性值</el-button>
@@ -53,7 +53,21 @@ export default {
       category2Id: '',
       category3Id: '',
       attrList: [],
-      isShowTable: false
+      isShowTable: true,
+      // 收集新增屬性
+      attrInfo:
+        {
+          'attrName': '',
+          'attrValueList': [
+            {
+              'attrId': 0,
+              'valueName': 'string'
+            }
+          ],
+          'categoryId': 0,
+          'categoryLevel': 3
+        }
+
     }
   },
   methods: {
