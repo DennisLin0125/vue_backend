@@ -36,7 +36,7 @@
                 type="warning"
                 icon="el-icon-edit"
                 size="mini"
-                @click="isShowTable = false"
+                @click="updateAttr(row)"
               />
               <el-button type="danger" icon="el-icon-delete" size="mini" />
             </template>
@@ -47,7 +47,6 @@
       <div v-show="!isShowTable">
         <el-form
           ref="form"
-          :rules="rules"
           label-width="80px"
           :inline="true"
           :model="attrInfo"
@@ -100,6 +99,7 @@
 </template>
 
 <script>
+import cloneDeep from "lodash/cloneDeep"
 export default {
   name: 'Attribute',
   data() {
@@ -158,6 +158,11 @@ export default {
         categoryId: this.category3Id,
         categoryLevel: 3
       }
+    },
+    updateAttr(row) {
+      this.isShowTable = false
+      // 利用深拷貝
+      this.attrInfo = cloneDeep(row)
     }
   }
 }
