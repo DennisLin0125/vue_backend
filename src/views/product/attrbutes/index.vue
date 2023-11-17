@@ -163,6 +163,10 @@ export default {
       this.isShowTable = false
       // 利用深拷貝
       this.attrInfo = cloneDeep(row)
+      // 將相應屬性值元素加上flag
+      this.attrInfo.attrValueList.forEach(item => {
+        this.$set(item, 'flag', false)
+      })
     },
     toLook(row) {
       if (row.valueName.trim() === '') {
@@ -174,7 +178,7 @@ export default {
           return row.valueName === item.valueName
         }
       })
-      if(isRepeat) {
+      if (isRepeat) {
         this.$message({ type: 'error', message: '輸入的值已重複' })
         return
       }
