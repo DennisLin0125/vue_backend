@@ -84,7 +84,13 @@
           </el-table-column>
           <el-table-column prop="" label="操作" width="width">
             <template slot-scope="{ row, $index }">
-              <el-button type="danger" icon="el-icon-delete" size="mini" />
+              <el-popconfirm
+                :title="`確定要刪除 ${row.valueName} 嗎?`"
+                @onConfirm="deleteAttrValue($index)"
+              >
+                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" />
+              </el-popconfirm>
+
             </template>
           </el-table-column>
         </el-table>
@@ -193,6 +199,11 @@ export default {
       this.$nextTick(() => {
         this.$refs[index].focus()
       })
+    },
+    deleteAttrValue(index) {
+      // 刪除該元素
+      this.attrInfo.attrValueList.splice(index, 1)
+      this.$message({ type: 'success', message: '刪除成功' })
     }
   }
 }
