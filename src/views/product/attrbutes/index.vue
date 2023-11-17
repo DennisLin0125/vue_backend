@@ -72,13 +72,14 @@
             <template slot-scope="{ row, $index }">
               <el-input
                 v-if="row.flag"
+                :ref="$index"
                 v-model="row.valueName"
                 placeholder="請輸入屬性值名稱"
                 size="mini"
                 @blur="toLook(row)"
                 @keyup.native.enter="toLook(row)"
               />
-              <span v-else style="display: block;" @click="row.flag=true">{{ row.valueName }}</span>
+              <span v-else style="display: block;" @click="toEdit(row,$index)">{{ row.valueName }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="" label="操作" width="width">
@@ -149,6 +150,9 @@ export default {
         valueName: '',
         flag: true
       })
+      this.$nextTick(() => {
+        this.$refs[this.attrInfo.attrValueList.length - 1].focus()
+      })
     },
     addAttr() {
       this.isShowTable = false
@@ -183,6 +187,12 @@ export default {
         return
       }
       row.flag = false
+    },
+    toEdit(row, index) {
+      row.flag = true
+      this.$nextTick(() => {
+        this.$refs[index].focus()
+      })
     }
   }
 }
