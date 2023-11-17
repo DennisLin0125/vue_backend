@@ -45,12 +45,7 @@
       </div>
       <!-- 添加屬性和修改屬性的結構 -->
       <div v-show="!isShowTable">
-        <el-form
-          ref="form"
-          label-width="80px"
-          :inline="true"
-          :model="attrInfo"
-        >
+        <el-form ref="form" label-width="80px" :inline="true" :model="attrInfo">
           <el-form-item label="屬性名">
             <el-input v-model="attrInfo.attrName" placeholder="請輸入屬性名" />
           </el-form-item>
@@ -76,10 +71,14 @@
           <el-table-column prop="attrName" label="屬性值名稱" width="width">
             <template slot-scope="{ row, $index }">
               <el-input
+                v-if="row.flag"
                 v-model="row.valueName"
                 placeholder="請輸入屬性值名稱"
                 size="mini"
+                @blur="row.flag=false"
+                @keyup.native.enter="row.flag=false"
               />
+              <span v-else style="display: block;" @click="row.flag=true">{{ row.valueName }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="" label="操作" width="width">
@@ -99,7 +98,7 @@
 </template>
 
 <script>
-import cloneDeep from "lodash/cloneDeep"
+import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'Attribute',
   data() {
@@ -146,8 +145,9 @@ export default {
     },
     addAttrValue() {
       this.attrInfo.attrValueList.push({
-        attrId: undefined,
-        valueName: ''
+        attrId: this.attrInfo.id,
+        valueName: '',
+        flag: true
       })
     },
     addAttr() {
