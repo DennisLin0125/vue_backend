@@ -75,8 +75,8 @@
                 v-model="row.valueName"
                 placeholder="請輸入屬性值名稱"
                 size="mini"
-                @blur="row.flag=false"
-                @keyup.native.enter="row.flag=false"
+                @blur="toLook(row)"
+                @keyup.native.enter="toLook(row)"
               />
               <span v-else style="display: block;" @click="row.flag=true">{{ row.valueName }}</span>
             </template>
@@ -163,6 +163,22 @@ export default {
       this.isShowTable = false
       // 利用深拷貝
       this.attrInfo = cloneDeep(row)
+    },
+    toLook(row) {
+      if (row.valueName.trim() === '') {
+        this.$message({ type: 'error', message: '請輸入一個正確的值' })
+        return
+      }
+      const isRepeat = this.attrInfo.attrValueList.some((item) => {
+        if (row !== item) {
+          return row.valueName === item.valueName
+        }
+      })
+      if(isRepeat) {
+        this.$message({ type: 'error', message: '輸入的值已重複' })
+        return
+      }
+      row.flag = false
     }
   }
 }
