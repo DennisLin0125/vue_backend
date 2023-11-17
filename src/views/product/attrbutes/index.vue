@@ -97,6 +97,7 @@
         <el-button
           type="primary"
           :disabled="!attrInfo.attrName"
+          @click="addOrUpdateAttr"
         >保存</el-button>
         <el-button @click="isShowTable = true">取消</el-button>
       </div>
@@ -204,6 +205,22 @@ export default {
       // 刪除該元素
       this.attrInfo.attrValueList.splice(index, 1)
       this.$message({ type: 'success', message: '刪除成功' })
+    },
+    async addOrUpdateAttr() {
+      this.attrInfo.attrValueList = this.attrInfo.attrValueList.filter(item => {
+        if (item.valueName !== '') {
+          delete item.flag
+          return true
+        }
+      })
+      try {
+        await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo)
+        this.$message({ type: 'success', message: '保存成功' })
+        this.getAttrList()
+        this.isShowTable = true
+      } catch (error) {
+        this.$message({ type: 'error', message: error.message })
+      }
     }
   }
 }
