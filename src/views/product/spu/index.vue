@@ -3,8 +3,10 @@
     <el-card style="margin: 20px 0;">
       <CategorySelect :show="!isShowTable" @getCategoryId="getCategoryId" />
     </el-card>
+    <!-- 這裡有三部分切換 -->
     <el-card>
-      <div>
+      <!-- 展示SPU列表結構 -->
+      <div v-show="scene==0">
         <el-button type="primary" icon="el-icon-plus">添加Spu</el-button>
         <el-table border :data="records">
           <el-table-column type="index" label="序號" width="80" align="center" />
@@ -31,13 +33,20 @@
         />
 
       </div>
+      <SpuForm v-show="scene==1" />
+      <SkuForm v-show="scene==2" />
     </el-card>
+
   </div>
 </template>
 
 <script>
+import SpuForm from '@/views/product/spu/SpuForm'
+import SkuForm from '@/views/product/spu/SkuForm'
+
 export default {
   name: 'Spu',
+  components: { SpuForm, SkuForm },
   data() {
     return {
       category1Id: '',
@@ -47,7 +56,8 @@ export default {
       total: 0,
       isShowTable: true,
       page: 1,
-      limit: 3
+      limit: 3,
+      scene: 0
     }
   },
   methods: {
