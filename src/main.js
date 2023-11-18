@@ -41,7 +41,10 @@ Vue.prototype.$API = API
 
 // 引入組件
 import CategorySelect from '@/components/CategorySelect'
-Vue.component(CategorySelect.name,CategorySelect)
+Vue.component(CategorySelect.name, CategorySelect)
+
+import HintButton from '@/components/HintButton'
+Vue.component(HintButton.name, HintButton)
 
 new Vue({
   el: '#app',
