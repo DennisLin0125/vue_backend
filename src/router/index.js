@@ -74,16 +74,16 @@ export const constantRoutes = [
         meta: { title: '平台屬性管理' }
       },
       {
-        path: 'sku',
-        name: 'Sku',
-        component: () => import('@/views/product/sku'),
-        meta: { title: 'sku管理' }
-      },
-      {
         path: 'spu',
         name: 'Spu',
         component: () => import('@/views/product/spu'),
         meta: { title: 'spu管理' }
+      },
+      {
+        path: 'sku',
+        name: 'Sku',
+        component: () => import('@/views/product/sku'),
+        meta: { title: 'sku管理' }
       }
     ]
   },
