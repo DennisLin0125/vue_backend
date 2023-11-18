@@ -34,19 +34,48 @@
 
       </el-form-item>
       <el-form-item label="銷售屬性">
-        <el-select placeholder="還有3未選擇" value="">
+        <el-select v-model="attrId" :placeholder="`還有${unSelectScalAttr.length}未選擇`">
           <el-option
-            key="item.value"
-            label="item.label"
-            value="item.value"
+            v-for="unSelect in unSelectScalAttr"
+            :key="unSelect.id"
+            :label="unSelect.name"
+            :value="unSelect.id"
           />
         </el-select>
-        <el-button type="primary" icon="el-icon-plus">添加銷售屬性</el-button>
-        <el-table border>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!attrId">添加銷售屬性</el-button>
+        <el-table border style="width: 100%;" :data="spu.spuSaleAttrList">
           <el-table-column type="index" label="序號" width="80" align="center" />
-          <el-table-column prop="" label="屬性名" width="width" />
-          <el-table-column prop="" label="屬性值名稱列表" width="width" />
-          <el-table-column prop="" label="操作" width="width" />
+          <el-table-column prop="saleAttrName" label="屬性名" width="width" />
+          <el-table-column prop="" label="屬性值名稱列表" width="width">
+            <template slot-scope="{row,$index}">
+              <el-tag
+                v-for="tag in row.spuSaleAttrValueList"
+                :key="tag.id"
+                closable
+                :disable-transitions="false"
+              >
+                {{ tag.saleAttrValueName }}
+              </el-tag>
+              <!--
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+               -->
+              <el-input
+                v-if="row.inputVisible"
+                ref="saveTagInput"
+                v-model="row.inputValue"
+                class="input-new-tag"
+                size="small"
+              />
+              <!-- @click="showInput" -->
+              <el-button v-else class="button-new-tag" size="small">添加</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="" label="操作" width="width">
+            <template slot-scope="{row,$index}">
+              <el-button type="danger" icon="el-icon-delete" size="mini" />
+            </template>
+          </el-table-column>
         </el-table>
       </el-form-item>
       <el-form-item>
@@ -74,7 +103,18 @@ export default {
       },
       tradeMarkList: [],
       imageList: [],
-      baseSaleAttrList: []
+      baseSaleAttrList: [],
+      attrId: ''
+    }
+  },
+  computed: {
+    // 計算出未選到的
+    unSelectScalAttr() {
+      return this.baseSaleAttrList.filter((item) => {
+        return this.spu.spuSaleAttrList.every((item1) => {
+          return item.name !== item1.saleAttrName
+        })
+      })
     }
   },
   methods: {
@@ -118,6 +158,21 @@ export default {
 }
 </script>
 
-  <style>
+<style>
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+</style>
 
-  </style>
