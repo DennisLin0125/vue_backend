@@ -49,7 +49,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary">保存</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="$emit('changeScence',0)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -61,7 +61,11 @@ export default {
   data() {
     return {
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      spu: {},
+      tradeMarkList: [],
+      imageList: [],
+      baseSaleAttrList: []
     }
   },
   methods: {
@@ -71,6 +75,29 @@ export default {
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
+    },
+    // 初始化
+    async initSpuData(spu) {
+      // 獲取Spu訊息
+      const spuResult = await this.$API.spu.reqSpu(spu.id)
+      if (spuResult.code === 200) {
+        this.spu = spuResult.data
+      }
+      // 獲取品牌訊息
+      const tradeMarkResult = await this.$API.spu.reqTradeMarkList()
+      if (tradeMarkResult.code === 200) {
+        this.tradeMarkList = tradeMarkResult.data
+      }
+      // 獲取圖片訊息
+      const spuImageResult = await this.$API.spu.reqSpuImageList(spu.id)
+      if (spuImageResult.code === 200) {
+        this.imageList = spuImageResult.data
+      }
+      // 獲取平台全部銷售屬性
+      const result = await this.$API.spu.reqBaseSaleAttrList()
+      if (result.code === 200) {
+        this.baseSaleAttrList = result.data
+      }
     }
   }
 }

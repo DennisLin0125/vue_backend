@@ -64,7 +64,7 @@
           @size-change="sizeChange"
         />
       </div>
-      <SpuForm v-show="scene == 1" />
+      <SpuForm v-show="scene == 1" ref="spu" @changeScence="changeScence" />
       <SkuForm v-show="scene == 2" />
     </el-card>
   </div>
@@ -122,6 +122,11 @@ export default {
     },
     updateSpu(row) {
       this.scene = 1
+      // 調用子組件的方法
+      this.$refs.spu.initSpuData(row)
+    },
+    changeScence(scene) {
+      this.scene = scene
     }
   }
 }
