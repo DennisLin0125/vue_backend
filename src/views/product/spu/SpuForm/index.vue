@@ -1,28 +1,30 @@
 <template>
   <div>
-    <el-form ref="form" label-width="80px">
+    <el-form ref="form" label-width="80px" :model="spu">
       <el-form-item label="SPU名稱">
-        <el-input placeholder="請輸入SPU的名稱" />
+        <el-input v-model="spu.spuName" placeholder="請輸入SPU的名稱" />
       </el-form-item>
       <el-form-item label="品牌">
-        <el-select placeholder="請輸入品牌" value="">
+        <el-select v-model="spu.tmId" placeholder="請輸入品牌">
           <el-option
-            key="item.value"
-            label="item.label"
-            value="item.value"
+            v-for="item in tradeMarkList"
+            :key="item.id"
+            :label="item.tmName"
+            :value="item.id"
           />
         </el-select>
 
       </el-form-item>
       <el-form-item label="SPU描述">
-        <el-input type="textarea" placeholder="SPU的描述" rows="4" />
+        <el-input v-model="spu.description" type="textarea" placeholder="SPU的描述" rows="4" />
       </el-form-item>
       <el-form-item label="SPU圖片">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="/dev-api/admin/product/fileUpload"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
+          :file-list="imageList"
         >
           <i class="el-icon-plus" />
         </el-upload>
@@ -62,7 +64,14 @@ export default {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
-      spu: {},
+      spu: {
+        category3Id: 0,
+        description: '',
+        spuName: '',
+        tmId: '',
+        spuImageList: [],
+        spuSaleAttrList: []
+      },
       tradeMarkList: [],
       imageList: [],
       baseSaleAttrList: []
@@ -91,7 +100,13 @@ export default {
       // 獲取圖片訊息
       const spuImageResult = await this.$API.spu.reqSpuImageList(spu.id)
       if (spuImageResult.code === 200) {
-        this.imageList = spuImageResult.data
+        const listArr = spuImageResult.data
+        // 為了配合elementUI的顯示規定,故重新產生一個json
+        listArr.forEach(item => {
+          item.name = item.imgName
+          item.url = item.imgUrl
+        })
+        this.imageList = listArr
       }
       // 獲取平台全部銷售屬性
       const result = await this.$API.spu.reqBaseSaleAttrList()
