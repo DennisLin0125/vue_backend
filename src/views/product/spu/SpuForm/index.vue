@@ -35,15 +35,15 @@
 
       </el-form-item>
       <el-form-item label="銷售屬性">
-        <el-select v-model="attrId" :placeholder="`還有${unSelectScalAttr.length}未選擇`">
+        <el-select v-model="attrIdAndAttrName" :placeholder="`還有${unSelectScalAttr.length}未選擇`">
           <el-option
             v-for="unSelect in unSelectScalAttr"
             :key="unSelect.id"
             :label="unSelect.name"
-            :value="unSelect.id"
+            :value="`${unSelect.id}:${unSelect.name}`"
           />
         </el-select>
-        <el-button type="primary" icon="el-icon-plus" :disabled="!attrId">添加銷售屬性</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!attrIdAndAttrName" @click="addScalAttr">添加銷售屬性</el-button>
         <el-table border style="width: 100%;" :data="spu.spuSaleAttrList">
           <el-table-column type="index" label="序號" width="80" align="center" />
           <el-table-column prop="saleAttrName" label="屬性名" width="width" />
@@ -105,7 +105,7 @@ export default {
       tradeMarkList: [],
       imageList: [],
       baseSaleAttrList: [],
-      attrId: ''
+      attrIdAndAttrName: ''
     }
   },
   computed: {
@@ -157,6 +157,16 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       this.imageList = fileList
+    },
+    addScalAttr() {
+      const [baseSaleAttrId, saleAttrName] = this.attrIdAndAttrName.split(':')
+      const newSaleAttr = {
+        baseSaleAttrId,
+        saleAttrName,
+        spuSaleAttrValueList: []
+      }
+      this.spu.spuSaleAttrList.push(newSaleAttr)
+      this.attrIdAndAttrName = ''
     }
   }
 }
