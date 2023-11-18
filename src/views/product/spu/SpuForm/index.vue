@@ -25,6 +25,7 @@
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
           :file-list="imageList"
+          :on-success="handleSuccess"
         >
           <i class="el-icon-plus" />
         </el-upload>
@@ -119,7 +120,7 @@ export default {
   },
   methods: {
     handleRemove(file, fileList) {
-      console.log(file, fileList)
+      this.imageList = fileList
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -153,6 +154,9 @@ export default {
       if (result.code === 200) {
         this.baseSaleAttrList = result.data
       }
+    },
+    handleSuccess(response, file, fileList) {
+      this.imageList = fileList
     }
   }
 }
