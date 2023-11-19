@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card style="margin: 20px 0">
-      <CategorySelect :show="!isShowTable" @getCategoryId="getCategoryId" />
+      <CategorySelect :show="scene!=0" @getCategoryId="getCategoryId" />
     </el-card>
     <!-- 這裡有三部分切換 -->
     <el-card>
@@ -84,7 +84,6 @@ export default {
       category3Id: '',
       records: [],
       total: 0,
-      isShowTable: true,
       page: 1,
       limit: 3,
       scene: 0

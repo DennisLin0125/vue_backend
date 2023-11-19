@@ -34,7 +34,7 @@
           <i class="el-icon-plus" />
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="dialogImageUrl" alt="">
+          <img width="100%" :src="dialogImageUrl" alt="" />
         </el-dialog>
       </el-form-item>
       <el-form-item label="銷售屬性">
@@ -54,7 +54,8 @@
           icon="el-icon-plus"
           :disabled="!attrIdAndAttrName"
           @click="addSaleAttr"
-        >添加銷售屬性</el-button>
+          >添加銷售屬性</el-button
+        >
         <el-table border style="width: 100%" :data="spu.spuSaleAttrList">
           <el-table-column
             type="index"
@@ -66,10 +67,11 @@
           <el-table-column prop="" label="屬性值名稱列表" width="width">
             <template slot-scope="{ row, $index }">
               <el-tag
-                v-for="tag in row.spuSaleAttrValueList"
+                v-for="(tag, index) in row.spuSaleAttrValueList"
                 :key="tag.id"
                 closable
                 :disable-transitions="false"
+                @close="row.spuSaleAttrValueList.splice(index, 1)"
               >
                 {{ tag.saleAttrValueName }}
               </el-tag>
@@ -88,12 +90,18 @@
                 class="button-new-tag"
                 size="small"
                 @click="addSaleAttrValue(row)"
-              >添加</el-button>
+                >添加</el-button
+              >
             </template>
           </el-table-column>
           <el-table-column prop="" label="操作" width="width">
             <template slot-scope="{ row, $index }">
-              <el-button type="danger" icon="el-icon-delete" size="mini" />
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                @click="spu.spuSaleAttrList.splice($index, 1)"
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -108,113 +116,116 @@
 
 <script>
 export default {
-  name: 'SpuForm',
+  name: "SpuForm",
   data() {
     return {
-      dialogImageUrl: '',
+      dialogImageUrl: "",
       dialogVisible: false,
       spu: {
         category3Id: 0,
-        description: '',
-        spuName: '',
-        tmId: '',
+        description: "",
+        spuName: "",
+        tmId: "",
         spuImageList: [],
-        spuSaleAttrList: []
+        spuSaleAttrList: [],
       },
       tradeMarkList: [],
       imageList: [],
       baseSaleAttrList: [],
-      attrIdAndAttrName: ''
-    }
+      attrIdAndAttrName: "",
+    };
   },
   computed: {
     // 計算出未選到的
     unSelectScalAttr() {
       return this.baseSaleAttrList.filter((item) => {
         return this.spu.spuSaleAttrList.every((item1) => {
-          return item.name !== item1.saleAttrName
-        })
-      })
-    }
+          return item.name !== item1.saleAttrName;
+        });
+      });
+    },
   },
   methods: {
     handleRemove(file, fileList) {
-      this.imageList = fileList
+      this.imageList = fileList;
     },
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     },
     // 初始化
     async initSpuData(spu) {
       // 獲取Spu訊息
-      const spuResult = await this.$API.spu.reqSpu(spu.id)
+      const spuResult = await this.$API.spu.reqSpu(spu.id);
       if (spuResult.code === 200) {
-        this.spu = spuResult.data
+        this.spu = spuResult.data;
       }
       // 獲取品牌訊息
-      const tradeMarkResult = await this.$API.spu.reqTradeMarkList()
+      const tradeMarkResult = await this.$API.spu.reqTradeMarkList();
       if (tradeMarkResult.code === 200) {
-        this.tradeMarkList = tradeMarkResult.data
+        this.tradeMarkList = tradeMarkResult.data;
       }
       // 獲取圖片訊息
-      const spuImageResult = await this.$API.spu.reqSpuImageList(spu.id)
+      const spuImageResult = await this.$API.spu.reqSpuImageList(spu.id);
       if (spuImageResult.code === 200) {
-        const listArr = spuImageResult.data
+        const listArr = spuImageResult.data;
         // 為了配合elementUI的顯示規定,故重新產生一個json
         listArr.forEach((item) => {
-          item.name = item.imgName
-          item.url = item.imgUrl
-        })
-        this.imageList = listArr
+          item.name = item.imgName;
+          item.url = item.imgUrl;
+        });
+        this.imageList = listArr;
       }
       // 獲取平台全部銷售屬性
-      const result = await this.$API.spu.reqBaseSaleAttrList()
+      const result = await this.$API.spu.reqBaseSaleAttrList();
       if (result.code === 200) {
-        this.baseSaleAttrList = result.data
+        this.baseSaleAttrList = result.data;
       }
     },
     handleSuccess(response, file, fileList) {
-      this.imageList = fileList
+      this.imageList = fileList;
     },
     addSaleAttr() {
-      const [baseSaleAttrId, saleAttrName] = this.attrIdAndAttrName.split(':')
+      const [baseSaleAttrId, saleAttrName] = this.attrIdAndAttrName.split(":");
       const newSaleAttr = {
         baseSaleAttrId,
         saleAttrName,
-        spuSaleAttrValueList: []
-      }
-      this.spu.spuSaleAttrList.push(newSaleAttr)
-      this.attrIdAndAttrName = ''
+        spuSaleAttrValueList: [],
+      };
+      this.spu.spuSaleAttrList.push(newSaleAttr);
+      this.attrIdAndAttrName = "";
     },
     addSaleAttrValue(row) {
-      this.$set(row, 'inputVisible', true)
-      this.$set(row, 'inputValue', '')
+      this.$set(row, "inputVisible", true);
+      this.$set(row, "inputValue", "");
     },
     handleInputConfirm(row) {
-      const { baseSaleAttrId, inputValue } = row
-      if (inputValue.trim() === '') {
-        this.$message({ type: 'error', message: '屬性不能為空' })
-        return
+      const { baseSaleAttrId, inputValue } = row;
+      if (inputValue.trim() === "") {
+        this.$message({ type: "error", message: "屬性不能為空" });
+        return;
       }
       // 不能重複
       const result = row.spuSaleAttrValueList.every(
         (item) => item.saleAttrValueName !== inputValue
-      )
+      );
       if (!result) {
-        this.$message({ type: 'error', message: '屬性不能重複' })
-        return
+        this.$message({ type: "error", message: "屬性不能重複" });
+        return;
       }
 
       // 新增的銷售屬性值
-      const newSaleAttrValue = { baseSaleAttrId, saleAttrValueName: inputValue }
+      const newSaleAttrValue = {
+        baseSaleAttrId,
+        saleAttrValueName: inputValue,
+      };
       // 新增
-      row.spuSaleAttrValueList.push(newSaleAttrValue)
+      row.spuSaleAttrValueList.push(newSaleAttrValue);
       // 修改inputVisible为false，顯示button
-      row.inputVisible = false
-    }
-  }
-}
+      row.inputVisible = false;
+    },
+  },
+};
 </script>
 
 <style>
