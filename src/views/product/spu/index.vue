@@ -28,8 +28,8 @@
                 type="success"
                 icon="el-icon-plus"
                 size="mini"
-                title="添加Spu"
-                @click="addSpu"
+                title="添加Sku"
+                @click="addSku(row)"
               />
               <hint-button
                 type="warning"
@@ -147,6 +147,10 @@ export default {
       } else {
         this.$message({ type: 'error', message: '刪除失敗' })
       }
+    },
+    addSku(row){
+      // 切換場景
+      this.scene = 2
     }
   }
 }

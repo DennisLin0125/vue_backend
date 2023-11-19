@@ -260,7 +260,7 @@ export default {
       }
     },
     cancel() {
-      this.$emit('changeScence', { scence: 0, flag: '' })
+      this.$emit('changeScence', { scene: 0, flag: '' })
       // 清理數據
       // Object.assign合併對象
       Object.assign(this._data, this.$options.data())

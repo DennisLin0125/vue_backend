@@ -1,5 +1,7 @@
 <template>
-  <div>Sku</div>
+  <div>
+    sku
+  </div>
 </template>
 
 <script>
