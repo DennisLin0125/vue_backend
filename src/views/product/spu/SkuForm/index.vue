@@ -63,8 +63,8 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary">保存</el-button>
-        <el-button>取消</el-button>
+        <el-button type="primary" @click="saveSku">保存</el-button>
+        <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -141,6 +141,59 @@ export default {
       row.isDefault = 1
       // 收集圖片
       this.skuInfo.skuDefaultImg = row.imgUrl
+    },
+    cancel() {
+      this.$emit('changeSceneBySku', 0)
+      // 清除數據
+      Object.assign(this._data, this.$options.data())
+    },
+    async saveSku() {
+      // 整理參數
+      const { attrInfoList, skuInfo, spuSaleAttrList, imageList } = this
+      // const arr = []
+      // attrInfoList.forEach(item => {
+      //   if (item.attrIdAndValueId) {
+      //     const [attrId, valueId] = item.attrIdAndValueId.split(':')
+      //     const obj = { attrId, valueId }
+      //     arr.push(obj)
+      //   }
+      // })
+      // skuInfo.skuAttrValueList = arr
+
+      // 整理平台屬性
+      skuInfo.skuAttrValueList = attrInfoList.reduce((prev, curr) => {
+        if (curr.attrIdAndValueId) {
+          const [attrId, valueId] = curr.attrIdAndValueId.split(':')
+          prev.push({ attrId, valueId })
+        }
+        return prev
+      }, [])
+
+      // 整理銷售屬性
+      skuInfo.skuSaleAttrValueList = spuSaleAttrList.reduce((prev, item) => {
+        if (item.attrIdAndValueId) {
+          const [saleAttrId, saleAttrValueId] = item.attrIdAndValueId.split(':')
+          prev.push({ saleAttrId, saleAttrValueId })
+        }
+        return prev
+      }, [])
+
+      // 整理圖片的數據
+      skuInfo.skuImageList = imageList.map(item => {
+        return {
+          imgName: item.imgName,
+          imgUrl: item.imgUrl,
+          isDefault: item.isDefault,
+          spuImgId: item.id
+        }
+      })
+
+      // 發送請求
+      const result = await this.$API.spu.reqAddSku(skuInfo)
+      if (result.code === 200) {
+        this.$message({ type: 'success', message: '添加SKU成功' })
+        this.$emit('changeSceneBySku', 0)
+      }
     }
   }
 }

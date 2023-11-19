@@ -69,7 +69,7 @@
         />
       </div>
       <SpuForm v-show="scene == 1" ref="spu" @changeScence="changeScence" />
-      <SkuForm v-show="scene == 2" ref="sku" />
+      <SkuForm v-show="scene == 2" ref="sku" @changeSceneBySku="changeSceneBySku" />
     </el-card>
   </div>
 </template>
@@ -153,6 +153,9 @@ export default {
       this.scene = 2
       // 父組件調用子組件的方法發請求
       this.$refs.sku.getData(this.category1Id, this.category2Id, row)
+    },
+    changeSceneBySku(scene) {
+      this.scene = scene
     }
   }
 }
