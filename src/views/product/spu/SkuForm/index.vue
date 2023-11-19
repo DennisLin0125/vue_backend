@@ -32,9 +32,10 @@
       <el-form-item label="銷售屬性">
         <el-form ref="form" label-width="80px" :inline="true">
           <el-form-item v-for="saleAttr in spuSaleAttrList" :key="saleAttr.id" :label="saleAttr.saleAttrName">
-            <el-select placeholder="請選擇" v-model="saleAttr.attrIdAndValueId">
+            <el-select v-model="saleAttr.attrIdAndValueId" placeholder="請選擇">
               <el-option
-                v-for="(saleAttrValue) in saleAttr.spuSaleAttrValueList" :key="saleAttrValue.id"
+                v-for="(saleAttrValue) in saleAttr.spuSaleAttrValueList"
+                :key="saleAttrValue.id"
                 :label="saleAttrValue.saleAttrValueName"
                 :value="`${saleAttr.id}:${saleAttrValue.id}`"
               />
@@ -44,14 +45,19 @@
       </el-form-item>
 
       <el-form-item label="圖片列表">
-        <el-table border style="width: 100%;">
-          <el-table-column type="selection" label="" width="width" />
+        <el-table border style="width: 100%;" :data="spuImageLIst" @selection-change="handleSelectChange">
+          <el-table-column type="selection" width="width" />
           <el-table-column prop="col.id" label="圖片" width="width">
-            <template slot-scope="" />
+            <template slot-scope="{row,$index}">
+              <img :src="row.imgUrl" height="100px" width="100px">
+            </template>
           </el-table-column>
-          <el-table-column prop="col.id" label="名稱" width="width" />
+          <el-table-column prop="imgName" label="名稱" width="width" />
           <el-table-column prop="col.id" label="操作" width="width">
-            <template slot-scope="" />
+            <template slot-scope="{row,$index}">
+              <el-button v-if="row.isDefault == 0" type="primary" @click="changeDefault(row,$index)">設為默認</el-button>
+              <el-button v-else>默認</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </el-form-item>
@@ -92,7 +98,8 @@ export default {
         // 銷售屬性
         skuSaleAttrValueList: []
       },
-      spu: {}
+      spu: {},
+      imageList: []
     }
   },
   methods: {
@@ -106,7 +113,11 @@ export default {
       // 獲取圖片訊息
       const result = await this.$API.spu.reqSpuImageLIst(spu.id)
       if (result.code === 200) {
-        this.spuImageLIst = result.data
+        const list = result.data
+        list.forEach(item => {
+          item.isDefault = 0
+        })
+        this.spuImageLIst = list
       }
       // 獲取銷售屬性數據
       const result1 = await this.$API.spu.reqSpuSaleAttrList(spu.id)
@@ -118,6 +129,18 @@ export default {
       if (result2.code === 200) {
         this.attrInfoList = result2.data
       }
+    },
+    handleSelectChange(params) {
+      this.imageList = params
+    },
+    changeDefault(row, index) {
+      // 排他操作
+      this.spuImageLIst.forEach(item => {
+        item.isDefault = 0
+      })
+      row.isDefault = 1
+      // 收集圖片
+      this.skuInfo.skuDefaultImg = row.imgUrl
     }
   }
 }
