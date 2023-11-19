@@ -44,12 +44,16 @@
                 size="mini"
                 title="查看當前spu全部sku列表"
               />
-              <hint-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                title="刪除Spu"
-              />
+              <el-popconfirm title="確定要刪除嗎?" @onConfirm="deleteSpu(row)">
+                <hint-button
+                  slot="reference"
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="mini"
+                  title="刪除Spu"
+                />
+              </el-popconfirm>
+
             </template>
           </el-table-column>
         </el-table>
@@ -133,6 +137,15 @@ export default {
         this.getSpuList(this.page)
       } else {
         this.getSpuList()
+      }
+    },
+    async deleteSpu(row) {
+      const result = await this.$API.spu.reqDeleteSpu(row.id)
+      if (result.code === 200) {
+        this.$message({ type: 'success', message: '刪除成功' })
+        this.getSpuList(this.records.length > 1 ? this.page : this.page - 1)
+      } else {
+        this.$message({ type: 'error', message: '刪除失敗' })
       }
     }
   }
