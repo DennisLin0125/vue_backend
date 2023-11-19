@@ -106,7 +106,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="addOrUpdateSpu">保存</el-button>
-        <el-button @click="$emit('changeScence', 0)">取消</el-button>
+        <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -153,7 +153,6 @@ export default {
     },
     // 初始化
     async initSpuData(spu) {
-      this.attrIdAndAttrName = ''
       // 獲取Spu訊息
       const spuResult = await this.$API.spu.reqSpu(spu.id)
       if (spuResult.code === 200) {
@@ -236,10 +235,35 @@ export default {
       if (result.code === 200) {
         this.$message({ type: 'success', message: '保存成功' })
         // 通知父組件回到場景0
-        this.$emit('changeScence', 0)
+        this.$emit('changeScence', {
+          scene: 0,
+          flag: this.spu.id ? '修改' : '添加'
+        })
       } else {
         this.$message({ type: 'error', message: '保存失敗' })
       }
+
+      // 清理數據
+      Object.assign(this._data, this.$options.data())
+    },
+    async addSpuData(id) {
+      this.spu.category3Id = id
+      // 獲取品牌訊息
+      const tradeMarkResult = await this.$API.spu.reqTradeMarkList()
+      if (tradeMarkResult.code === 200) {
+        this.tradeMarkList = tradeMarkResult.data
+      }
+      // 獲取平台全部銷售屬性
+      const result = await this.$API.spu.reqBaseSaleAttrList()
+      if (result.code === 200) {
+        this.baseSaleAttrList = result.data
+      }
+    },
+    cancel() {
+      this.$emit('changeScence', { scence: 0, flag: '' })
+      // 清理數據
+      // Object.assign合併對象
+      Object.assign(this._data, this.$options.data())
     }
   }
 }

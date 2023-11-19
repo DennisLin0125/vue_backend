@@ -118,16 +118,22 @@ export default {
     },
     addSpu() {
       this.scene = 1
+      // 讓子組件發請求
+      this.$refs.spu.addSpuData(this.category3Id)
     },
     updateSpu(row) {
       this.scene = 1
       // 調用子組件的方法
       this.$refs.spu.initSpuData(row)
     },
-    changeScence(scene) {
+    changeScence({ scene, flag }) {
       this.scene = scene
       // 更新數據
-      this.getSpuList(this.page)
+      if (flag === '修改') {
+        this.getSpuList(this.page)
+      } else {
+        this.getSpuList()
+      }
     }
   }
 }
