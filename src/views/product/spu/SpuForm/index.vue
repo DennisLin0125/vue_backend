@@ -13,10 +13,14 @@
             :value="item.id"
           />
         </el-select>
-
       </el-form-item>
       <el-form-item label="SPU描述">
-        <el-input v-model="spu.description" type="textarea" placeholder="SPU的描述" rows="4" />
+        <el-input
+          v-model="spu.description"
+          type="textarea"
+          placeholder="SPU的描述"
+          rows="4"
+        />
       </el-form-item>
       <el-form-item label="SPU圖片">
         <el-upload
@@ -32,10 +36,12 @@
         <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
-
       </el-form-item>
       <el-form-item label="銷售屬性">
-        <el-select v-model="attrIdAndAttrName" :placeholder="`還有${unSelectScalAttr.length}未選擇`">
+        <el-select
+          v-model="attrIdAndAttrName"
+          :placeholder="`還有${unSelectScalAttr.length}未選擇`"
+        >
           <el-option
             v-for="unSelect in unSelectScalAttr"
             :key="unSelect.id"
@@ -43,12 +49,22 @@
             :value="`${unSelect.id}:${unSelect.name}`"
           />
         </el-select>
-        <el-button type="primary" icon="el-icon-plus" :disabled="!attrIdAndAttrName" @click="addScalAttr">添加銷售屬性</el-button>
-        <el-table border style="width: 100%;" :data="spu.spuSaleAttrList">
-          <el-table-column type="index" label="序號" width="80" align="center" />
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          :disabled="!attrIdAndAttrName"
+          @click="addSaleAttr"
+        >添加銷售屬性</el-button>
+        <el-table border style="width: 100%" :data="spu.spuSaleAttrList">
+          <el-table-column
+            type="index"
+            label="序號"
+            width="80"
+            align="center"
+          />
           <el-table-column prop="saleAttrName" label="屬性名" width="width" />
           <el-table-column prop="" label="屬性值名稱列表" width="width">
-            <template slot-scope="{row,$index}">
+            <template slot-scope="{ row, $index }">
               <el-tag
                 v-for="tag in row.spuSaleAttrValueList"
                 :key="tag.id"
@@ -57,23 +73,26 @@
               >
                 {{ tag.saleAttrValueName }}
               </el-tag>
-              <!--
-                @keyup.enter.native="handleInputConfirm"
-                @blur="handleInputConfirm"
-               -->
+
               <el-input
                 v-if="row.inputVisible"
                 ref="saveTagInput"
                 v-model="row.inputValue"
                 class="input-new-tag"
                 size="small"
+                @blur="handleInputConfirm(row)"
+                @keyup.enter.native="handleInputConfirm(row)"
               />
-              <!-- @click="showInput" -->
-              <el-button v-else class="button-new-tag" size="small">添加</el-button>
+              <el-button
+                v-else
+                class="button-new-tag"
+                size="small"
+                @click="addSaleAttrValue(row)"
+              >添加</el-button>
             </template>
           </el-table-column>
           <el-table-column prop="" label="操作" width="width">
-            <template slot-scope="{row,$index}">
+            <template slot-scope="{ row, $index }">
               <el-button type="danger" icon="el-icon-delete" size="mini" />
             </template>
           </el-table-column>
@@ -81,7 +100,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary">保存</el-button>
-        <el-button @click="$emit('changeScence',0)">取消</el-button>
+        <el-button @click="$emit('changeScence', 0)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -143,7 +162,7 @@ export default {
       if (spuImageResult.code === 200) {
         const listArr = spuImageResult.data
         // 為了配合elementUI的顯示規定,故重新產生一個json
-        listArr.forEach(item => {
+        listArr.forEach((item) => {
           item.name = item.imgName
           item.url = item.imgUrl
         })
@@ -158,7 +177,7 @@ export default {
     handleSuccess(response, file, fileList) {
       this.imageList = fileList
     },
-    addScalAttr() {
+    addSaleAttr() {
       const [baseSaleAttrId, saleAttrName] = this.attrIdAndAttrName.split(':')
       const newSaleAttr = {
         baseSaleAttrId,
@@ -167,6 +186,32 @@ export default {
       }
       this.spu.spuSaleAttrList.push(newSaleAttr)
       this.attrIdAndAttrName = ''
+    },
+    addSaleAttrValue(row) {
+      this.$set(row, 'inputVisible', true)
+      this.$set(row, 'inputValue', '')
+    },
+    handleInputConfirm(row) {
+      const { baseSaleAttrId, inputValue } = row
+      if (inputValue.trim() === '') {
+        this.$message({ type: 'error', message: '屬性不能為空' })
+        return
+      }
+      // 不能重複
+      const result = row.spuSaleAttrValueList.every(
+        (item) => item.saleAttrValueName !== inputValue
+      )
+      if (!result) {
+        this.$message({ type: 'error', message: '屬性不能重複' })
+        return
+      }
+
+      // 新增的銷售屬性值
+      const newSaleAttrValue = { baseSaleAttrId, saleAttrValueName: inputValue }
+      // 新增
+      row.spuSaleAttrValueList.push(newSaleAttrValue)
+      // 修改inputVisible为false，顯示button
+      row.inputVisible = false
     }
   }
 }
