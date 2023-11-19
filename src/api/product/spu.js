@@ -112,7 +112,7 @@ export const reqAddSku = (skuInfo) => {
   })
 }
 
-//* 取得SKU列表資料的接口
+//* 取得SPU列表資料的接口
 //* GET /admin/product/findBySpuId/{spuId}
 export const reqSkuList = (spuId) => {
   return request({

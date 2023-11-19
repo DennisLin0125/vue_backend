@@ -69,7 +69,7 @@
         />
       </div>
       <SpuForm v-show="scene == 1" ref="spu" @changeScence="changeScence" />
-      <SkuForm v-show="scene == 2" />
+      <SkuForm v-show="scene == 2" ref="sku" />
     </el-card>
   </div>
 </template>
@@ -148,9 +148,11 @@ export default {
         this.$message({ type: 'error', message: '刪除失敗' })
       }
     },
-    addSku(row){
+    addSku(row) {
       // 切換場景
       this.scene = 2
+      // 父組件調用子組件的方法發請求
+      this.$refs.sku.getData(this.category1Id, this.category2Id, row)
     }
   }
 }
