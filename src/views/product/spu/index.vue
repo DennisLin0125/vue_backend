@@ -126,6 +126,8 @@ export default {
     },
     changeScence(scene) {
       this.scene = scene
+      // 更新數據
+      this.getSpuList(this.page)
     }
   }
 }
