@@ -43,6 +43,7 @@
                 icon="el-icon-info"
                 size="mini"
                 title="查看當前spu全部sku列表"
+                @click="handler(row)"
               />
               <el-popconfirm title="確定要刪除嗎?" @onConfirm="deleteSpu(row)">
                 <hint-button
@@ -71,6 +72,19 @@
       <SpuForm v-show="scene == 1" ref="spu" @changeScence="changeScence" />
       <SkuForm v-show="scene == 2" ref="sku" @changeSceneBySku="changeSceneBySku" />
     </el-card>
+    <el-dialog :title="`${spu.spuName}的SKU列表`" :visible.sync="dialogTableVisible">
+      <el-table :data="skuList" border style="width: 100%;">
+        <el-table-column prop="skuName" label="名稱" width="width" />
+        <el-table-column prop="price" label="價格" width="width" />
+        <el-table-column prop="weight" label="重量" width="width" />
+        <el-table-column label="預設圖片" width="width">
+          <template slot-scope="{row,$index}">
+            <img :src="row.skuDefaultImg" height="100px" width="100px">
+          </template>
+        </el-table-column>
+      </el-table>
+
+    </el-dialog>
   </div>
 </template>
 
@@ -90,7 +104,10 @@ export default {
       total: 0,
       page: 1,
       limit: 3,
-      scene: 0
+      scene: 0,
+      dialogTableVisible: false,
+      spu: {},
+      skuList: []
     }
   },
   methods: {
@@ -156,6 +173,15 @@ export default {
     },
     changeSceneBySku(scene) {
       this.scene = scene
+    },
+    async handler(spu) {
+      this.spu = spu
+      this.dialogTableVisible = true
+      // 獲取SKU資料進行展示
+      const result = await this.$API.spu.reqSkuList(spu.id)
+      if (result.code === 200) {
+        this.skuList = result.data
+      }
     }
   }
 }
