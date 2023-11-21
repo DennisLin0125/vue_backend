@@ -83,9 +83,9 @@
       <el-row>
         <el-col :span="5">商品圖片</el-col>
         <el-col :span="16">
-          <el-carousel height="150px">
+          <el-carousel height="400px">
             <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
-              <img :src="item.imgUrl" >
+              <img :src="item.imgUrl">
             </el-carousel-item>
           </el-carousel>
         </el-col>
