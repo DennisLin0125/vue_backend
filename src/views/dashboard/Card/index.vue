@@ -150,6 +150,9 @@
       <el-col :span="6">
         <el-card>
           <Detail title="支付筆數" count="88460">
+            <template slot="charts">
+              <BarChart />
+            </template>
             <template slot="footer">
               <span>轉化率 65%</span>
             </template>
@@ -293,10 +296,11 @@
 
 <script>
 import Detail from './Detail'
+import BarChart from './BarCharts'
 import LineCharts from './LineChart'
 export default {
   name: 'Card',
-  components: { Detail, LineCharts }
+  components: { Detail, LineCharts, BarChart }
 }
 </script>
 
