@@ -137,6 +137,9 @@
       <el-col :span="6">
         <el-card>
           <Detail title="訪問量" count="88460">
+            <template slot="charts">
+              <LineCharts />
+            </template>
             <template slot="footer">
               <span>日訪問量 1234</span>
             </template>
@@ -146,7 +149,7 @@
       </el-col>
       <el-col :span="6">
         <el-card>
-          <Detail title="支付筆數" count="88460" >
+          <Detail title="支付筆數" count="88460">
             <template slot="footer">
               <span>轉化率 65%</span>
             </template>
@@ -290,9 +293,10 @@
 
 <script>
 import Detail from './Detail'
+import LineCharts from './LineChart'
 export default {
   name: 'Card',
-  components: { Detail }
+  components: { Detail, LineCharts }
 }
 </script>
 
