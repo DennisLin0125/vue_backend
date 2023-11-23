@@ -162,6 +162,9 @@
       <el-col :span="6">
         <el-card>
           <Detail title="運營活動效果" count="78%">
+            <template slot="charts">
+              <ProgressCharts />
+            </template>
             <template slot="footer">
               <span>周同比&nbsp;&nbsp;56.67%
                 <svg
@@ -298,9 +301,10 @@
 import Detail from './Detail'
 import BarChart from './BarCharts'
 import LineCharts from './LineChart'
+import ProgressCharts from './ProgressCharts'
 export default {
   name: 'Card',
-  components: { Detail, LineCharts, BarChart }
+  components: { Detail, LineCharts, BarChart, ProgressCharts }
 }
 </script>
 

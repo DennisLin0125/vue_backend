@@ -7,23 +7,36 @@
 // 引入echarts
 import echarts from 'echarts'
 export default {
-  name: 'BarCharts',
+  name: 'ProgressCharts',
   mounted() {
     const lineCharts = echarts.init(this.$refs.charts)
-
     lineCharts.setOption({
       xAxis: {
         show: false,
-        type: 'category'
+        min: 0,
+        max: 100
       },
       yAxis: {
-        show: false
+        show: false,
+        type: 'category'
       },
       series: [
         {
           type: 'bar',
-          data: [10, 7, 33, 12, 48, 9, 29, 10, 44, 33, 22, 8],
-          color: 'cyan'
+          data: [78],
+          color: 'cyan',
+          barWidth: 10,
+          // eslint-disable-next-line no-dupe-keys
+          color: 'yellowgreen',
+          showBackground: true,
+          backgroundStyle: {
+            color: '#eee'
+          },
+          label: {
+            show: true,
+            formatter: '|',
+            position: 'right'
+          }
         }
       ],
       grid: {
@@ -31,8 +44,7 @@ export default {
         top: 0,
         right: 0,
         bottom: 0
-      },
-      tooltip: {}
+      }
     })
   }
 }
