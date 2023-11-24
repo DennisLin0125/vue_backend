@@ -4,22 +4,24 @@
       <!--  @tab-click="handleClick"-->
       <!--      頭部左側內容-->
       <el-tabs v-model="activeName" class="tab">
-        <el-tab-pane label="銷售額" name="銷售額" />
-        <el-tab-pane label="訪問量" name="訪問量" />
+        <el-tab-pane label="銷售額" name="sale" />
+        <el-tab-pane label="訪問量" name="visit" />
       </el-tabs>
       <!--      頭部右側內容-->
       <div class="right">
-        <span>今日</span>
-        <span>本周</span>
-        <span>本月</span>
-        <span>本年</span>
-        <!-- type="daterange"        v-model="value1"-->
+        <span @click="setDay">今日</span>
+        <span @click="setWeek">本周</span>
+        <span @click="setMonth">本月</span>
+        <span @click="setYear">本年</span>
         <el-date-picker
+          v-model="date"
+          type="daterange"
           class="date"
           range-separator="-"
           start-placeholder="開始日期"
           end-placeholder="結束日期"
           size="mini"
+          value-format="yyyy-MM-dd"
         />
       </div>
     </div>
@@ -31,7 +33,7 @@
           <div ref="charts" class="charts" />
         </el-col>
         <el-col :span="6" class="right">
-          <h3>門店銷售額排名</h3>
+          <h3>門店{{ title }}排名</h3>
           <ul>
             <li>
               <span class="rindex">0</span>
@@ -77,19 +79,36 @@
 
 <script>
 import echarts from 'echarts'
+import dayjs from 'dayjs'
 export default {
   name: 'Sale',
   data() {
     return {
-      activeName: '銷售額'
+      activeName: 'sale',
+      myCharts: null,
+      date: []
+    }
+  },
+  computed: {
+    title() {
+      return this.activeName === 'sale' ? '銷售額' : '訪問量'
+    }
+  },
+  watch: {
+    title() {
+      this.myCharts.setOption({
+        title: {
+          text: this.title
+        }
+      })
     }
   },
   mounted() {
   //   初始化
-    const myCharts = echarts.init(this.$refs.charts)
-    myCharts.setOption({
+    this.myCharts = echarts.init(this.$refs.charts)
+    this.myCharts.setOption({
       title: {
-        text: '銷售額趨勢'
+        text: this.title
       },
       tooltip: {
         trigger: 'axis',
@@ -127,6 +146,27 @@ export default {
         }
       ]
     })
+  },
+  methods: {
+    setDay() {
+      const day = dayjs().format('YYYY-MM-DD')
+      this.date = [day, day]
+    },
+    setWeek() {
+      const start = dayjs().day(1).format('YYYY-MM-DD')
+      const end = dayjs().day(7).format('YYYY-MM-DD')
+      this.date = [start, end]
+    },
+    setMonth() {
+      const start = dayjs().startOf('month').format('YYYY-MM-DD')
+      const end = dayjs().endOf('month').format('YYYY-MM-DD')
+      this.date = [start, end]
+    },
+    setYear() {
+      const start = dayjs().startOf('year').format('YYYY-MM-DD')
+      const end = dayjs().endOf('year').format('YYYY-MM-DD')
+      this.date = [start, end]
+    }
   }
 }
 </script>
