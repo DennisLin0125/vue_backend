@@ -5,7 +5,7 @@ const state = {
 }
 const mutations = {
   GETDATA(state, list) {
-    state.data = list
+    state.list = list
   }
 }
 const actions = {

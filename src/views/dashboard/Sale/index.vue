@@ -80,6 +80,8 @@
 <script>
 import echarts from 'echarts'
 import dayjs from 'dayjs'
+import { mapState } from 'vuex'
+
 export default {
   name: 'Sale',
   data() {
@@ -92,14 +94,71 @@ export default {
   computed: {
     title() {
       return this.activeName === 'sale' ? '銷售額' : '訪問量'
-    }
+    },
+    ...mapState({
+      listState: state => state.home.list
+    })
   },
   watch: {
     title() {
       this.myCharts.setOption({
         title: {
           text: this.title
-        }
+        },
+        xAxis: {
+          data: this.title === '銷售額' ? this.listState.orderFullYearAxis : this.listState.orderFullYearAxis
+        },
+        series: [
+          {
+            name: 'Direct',
+            type: 'bar',
+            barWidth: '60%',
+            data: this.title === '銷售額' ? this.listState.userFullYear : this.listState.orderFullYear,
+            color: 'skyblue'
+          }
+        ]
+      })
+    },
+    listState() {
+      this.myCharts.setOption({
+        title: {
+          text: this.title
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: this.listState.orderFullYearAxis,
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: 'Direct',
+            type: 'bar',
+            barWidth: '60%',
+            data: this.listState.orderFullYearAxis,
+            color: 'skyblue'
+          }
+        ]
       })
     }
   },
@@ -125,7 +184,7 @@ export default {
       xAxis: [
         {
           type: 'category',
-          data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+          data: [],
           axisTick: {
             alignWithLabel: true
           }
@@ -141,7 +200,7 @@ export default {
           name: 'Direct',
           type: 'bar',
           barWidth: '60%',
-          data: [10, 52, 200, 334, 390, 330, 220, 110, 298, 230, 15, 159],
+          data: [],
           color: 'skyblue'
         }
       ]
